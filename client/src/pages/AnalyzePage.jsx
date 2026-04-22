@@ -2,6 +2,8 @@ import { useState, useRef } from 'react'
 import { useAuth } from '../context/AuthContext'
 import ResultSection from '../components/ResultSection'
 
+const API_BASE = import.meta.env.VITE_API_URL || ''
+
 export default function AnalyzePage() {
   const { token } = useAuth()
   const fileRef = useRef()
@@ -33,10 +35,9 @@ export default function AnalyzePage() {
       form.append('resume', file)
       if (jobDesc.trim()) form.append('jobDescription', jobDesc)
 
-      // Get token from context or localStorage fallback
       const authToken = token || localStorage.getItem('rz_token') || localStorage.getItem('token')
 
-      const res = await fetch('/api/analyze', {
+      const res = await fetch(`${API_BASE}/api/analyze`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${authToken}` },
         body: form,
@@ -63,10 +64,7 @@ export default function AnalyzePage() {
         </div>
 
         <div style={s.grid}>
-          {/* Left inputs */}
           <div style={s.left}>
-
-            {/* Upload zone */}
             <div
               style={{ ...s.dropzone, ...(dragging ? s.dropActive : {}), ...(file ? s.dropFilled : {}) }}
               onDragOver={e => { e.preventDefault(); setDragging(true) }}
@@ -92,7 +90,6 @@ export default function AnalyzePage() {
               )}
             </div>
 
-            {/* Job description */}
             <div style={s.card} className="fade-up-1">
               <label style={s.label}>
                 <span style={s.labelBadge}>Optional</span>
@@ -121,7 +118,6 @@ export default function AnalyzePage() {
             </button>
           </div>
 
-          {/* Right results */}
           <div style={s.right}>
             {!result && !loading && (
               <div style={s.placeholder}>
@@ -170,12 +166,7 @@ const s = {
   grid:  { display: 'grid', gridTemplateColumns: '380px 1fr', gap: '2rem', alignItems: 'start' },
   left:  { display: 'flex', flexDirection: 'column', gap: '1rem', position: 'sticky', top: 80 },
   right: { minHeight: 400 },
-
-  dropzone: {
-    border: '2px dashed var(--border2)', borderRadius: 'var(--radius)',
-    padding: '2rem', textAlign: 'center', cursor: 'pointer',
-    background: 'var(--card)', transition: 'all .2s',
-  },
+  dropzone: { border: '2px dashed var(--border2)', borderRadius: 'var(--radius)', padding: '2rem', textAlign: 'center', cursor: 'pointer', background: 'var(--card)', transition: 'all .2s' },
   dropActive: { borderColor: 'var(--accent)', background: 'rgba(124,92,252,0.08)' },
   dropFilled: { borderColor: 'var(--accent)', borderStyle: 'solid' },
   uploadIcon:  { fontSize: 28, marginBottom: 10, color: 'var(--text3)' },
@@ -185,24 +176,14 @@ const s = {
   fileName:    { fontWeight: 600, fontSize: 14, marginBottom: 2, wordBreak: 'break-all' },
   fileSize:    { fontSize: 12, color: 'var(--text3)', marginBottom: 6 },
   changeFile:  { fontSize: 11, color: 'var(--accent2)', textDecoration: 'underline' },
-
   card:       { background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: 6 },
   label:      { fontSize: 13, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8 },
   labelBadge: { fontSize: 10, background: 'var(--bg3)', border: '1px solid var(--border)', borderRadius: 5, padding: '2px 7px', color: 'var(--accent2)', fontFamily: 'var(--font-mono)' },
   hint:       { fontSize: 12, color: 'var(--text3)' },
   textarea:   { background: 'var(--bg3)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '10px 12px', color: 'var(--text)', fontSize: 13, width: '100%', lineHeight: 1.6 },
-
   errorBox: { background: 'rgba(248,113,113,0.1)', border: '1px solid rgba(248,113,113,0.25)', color: '#fca5a5', borderRadius: 'var(--radius-sm)', padding: '10px 14px', fontSize: 13 },
-
-  btn: {
-    background: 'linear-gradient(135deg,#7c5cfc,#a855f7)', border: 'none',
-    borderRadius: 'var(--radius-sm)', padding: 14, color: '#fff',
-    fontSize: 15, fontWeight: 700, fontFamily: 'var(--font-display)',
-    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
-    boxShadow: '0 4px 24px rgba(124,92,252,0.35)', cursor: 'pointer',
-  },
+  btn: { background: 'linear-gradient(135deg,#7c5cfc,#a855f7)', border: 'none', borderRadius: 'var(--radius-sm)', padding: 14, color: '#fff', fontSize: 15, fontWeight: 700, fontFamily: 'var(--font-display)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, boxShadow: '0 4px 24px rgba(124,92,252,0.35)', cursor: 'pointer' },
   spinner: { width: 16, height: 16, border: '2px solid rgba(255,255,255,.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin .7s linear infinite', display: 'inline-block' },
-
   placeholder:      { background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '3rem 2rem', textAlign: 'center' },
   placeholderIcon:  { fontSize: 40, color: 'var(--accent)', marginBottom: 16 },
   placeholderTitle: { fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 700, marginBottom: 8 },
@@ -211,7 +192,6 @@ const s = {
   exCard:           { background: 'var(--bg3)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: '1rem 1.5rem', minWidth: 100 },
   exNum:            { fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 800, color: 'var(--text3)', marginBottom: 4 },
   exLabel:          { fontSize: 11, color: 'var(--text3)', fontFamily: 'var(--font-mono)' },
-
   loadingBox:  { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 400, gap: 16 },
   loadingRing: { width: 50, height: 50, border: '3px solid var(--bg3)', borderTopColor: 'var(--accent)', borderRadius: '50%', animation: 'spin .9s linear infinite' },
   loadingText: { fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 700 },
