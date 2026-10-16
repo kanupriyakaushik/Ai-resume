@@ -67,13 +67,13 @@ Return ONLY the JSON object. Nothing else.`
     // Call Groq (free)
     const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
     const completion = await groq.chat.completions.create({
-      model: 'llama-3.3-70b-versatile',
+      model: process.env.GROQ_MODEL || 'openai/gpt-oss-120b',
       messages: [
         { role: 'system', content: 'You are a resume analysis expert. Always respond with valid JSON only. No markdown, no backticks, no explanation.' },
         { role: 'user', content: prompt },
       ],
       temperature: 0.3,
-      max_tokens: 1500,
+      max_tokens: 4000,
     })
 
     // Parse response
