@@ -48,13 +48,13 @@ Return ONLY the JSON. Nothing else.`
 
     const groq = getGroq()
     const completion = await groq.chat.completions.create({
-      model: 'llama-3.3-70b-versatile',
+      model: process.env.GROQ_MODEL || 'openai/gpt-oss-120b',
       messages: [
         { role: 'system', content: 'You are an expert resume writer. Always respond with valid JSON only.' },
         { role: 'user', content: prompt },
       ],
       temperature: 0.4,
-      max_tokens: 1500,
+      max_tokens: 4000,
     })
 
     let result
